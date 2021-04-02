@@ -1,0 +1,26 @@
+ # AuthUserFile /var/www/cf/data/www/t19.cf.od.ua/.htpasswd
+ # AuthType Basic
+ # AuthName "Password-protected Area"
+ # Require valid-user
+
+ RewriteEngine On
+ RewriteBase /
+
+<IfModule mod_rewrite.c>
+	# Убираем лишние слеши на конце URL
+	RewriteCond %{THE_REQUEST} //
+	RewriteRule ^(.*)$ https://%{HTTP_HOST}/$0 [R=301,L]
+
+	# Убираем index.php на конце
+	RewriteCond %{REQUEST_URI} ^(.*)/index\.php$
+	RewriteRule ^(.*)index\.php$ https://%{HTTP_HOST}/$1 [R=301,L]
+	RewriteCond %{THE_REQUEST} " (/[^?/]+)\.php"
+RewriteRule ^ %1 [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^/]+)$ /$1.php [L]
+
+	# Страницы пользовательских ошибок
+	ErrorDocument 404 /404.php
+
+</IfModule>
